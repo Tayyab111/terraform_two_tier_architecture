@@ -1,6 +1,9 @@
 variable "region" {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 358ff418bb36b16fa269d33347d2c41a50aec6f0
 }
 # variable "vpc_name" {
   
@@ -20,9 +23,12 @@ variable "region" {
 # variable "accessip" {
   
 # }
+<<<<<<< HEAD
 =======
 } 
 >>>>>>> 5c0d807 (new2)
+=======
+>>>>>>> 358ff418bb36b16fa269d33347d2c41a50aec6f0
 variable "vpc_config" {
   type = object({
     #region    = "ap-south-1"
