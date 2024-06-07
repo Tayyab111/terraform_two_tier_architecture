@@ -12,10 +12,6 @@ vpc_config = {
   availability_zone_ap_southeast_1 = ["ap-southeast-1a", "ap-southeast-1b"]
 }
 
-# sg_config = {
-#   accessip = "0.0.0.0/0"
-
-# }
 
 sg = {
   web_sg = { #key
@@ -92,7 +88,7 @@ rds_cluster = {
 launch_template = {
   name_prefix   = "wordpress_template"
   image_id      = "ami-0a95d2cc973f39afc"
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   user_data     = "/home/tayab/Desktop/tfnew/asg/user_data.sh"
   resource_type = "instance"
 }
@@ -103,11 +99,28 @@ my_asg = {
   max     = "2"
   min     = "1"
 }
+asg_scaling_policy = {
+  scaling_adjustment = "1"
+  adjustment_type = "ChangeInCapacity"
+  cooldown = "300"
+  policy_type = "StepScaling"
+
+  increase_one_ec2 = {
+    name = "increase-one-ec2"
+  }
+  increase_two_ec2 = {
+    name = "increase-one-ec2"
+    scaling_adjustment = "1"
+  }
+  increase_one_ec2 = {
+    name = "increase-one-ec2"
+  }
+}
 
 alb = {
   name = "wordpress-alb"
   internal = "false"
-  idle_timeout = "60" #it means that connections to the ALB will be closed by the ALB if they remain idle for longer than 60 seconds.
+  idle_timeout = "400" #it means that connections to the ALB will be closed by the ALB if they remain idle for longer than 60 seconds.
   ip_address_type = "ipv4"
 
   alb_listener = {
@@ -120,4 +133,36 @@ alb_tg = {
     unhealthy_threshold = "10"
     timeout = "5"
     interval = "10"
+    matcher = "200-303"
   }
+
+cpu_utilization  = {
+  alarm_name = "increase_ec2"
+  alrm_name = "low"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods = "2"
+  metric_name = "CPUUtilization"
+  namespace = "AWS/EC2"
+  period = "120"
+  statistic = "Average"
+  threshold = "30"
+  alarm_description = "This metric monitors ec2 cpu utilization, if it goes above 40% for 2 periods it will trigger an alarm"
+  insufficient_data_actions = []
+  ok_actions = []
+
+  cpu_less_then_30 = {
+  alarm_name = "descrase_ec2"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  threshold = "30"
+  alarm_description = "This metric monitors ec2 cpu utilization, if it goes below 40% for 2 periods it will trigger an alarm."
+}
+}
+
+
+sns_topic = {
+  name = "cpu_alarm_topic_sns"
+  topic_subscription ={
+    protocol = "email"
+    endpoint = "tayyabafridi843@gmail.com"
+  }
+}

@@ -31,10 +31,10 @@ module "asg" {
   tags             = var.tags 
   lanuch_template_output = module.launch_template.lanuch_template_output
   my_asg = var.my_asg
-  public_subnet_id = module.vpc.public_subnet_id
+  private_subnet_id = module.vpc.subnet_ids
   alb_target_arn = module.alb.alb_target_group_arn
-
- } 
+  asg_scaling_policy = var.asg_scaling_policy
+} 
 module "launch_template" {
   source = "./lanuch_template"
   cluster_endpoint = module.rds.cluster_endpoint
@@ -42,7 +42,7 @@ module "launch_template" {
   master_username  = module.rds.user_name
   master_password  = module.rds.password
   tags             = var.tags
-  launch_template = var.launch_template
+  launch_template = var.launch_template 
   public_subnet_id = module.vpc.public_subnet_id
   sg_id = [module.sg["web_sg"].sg_id]
 
@@ -55,6 +55,15 @@ module "alb" {
   public_subnet_id = module.vpc.public_subnet_id
   vpc_id = module.vpc.vpc_id
   alb_tg = var.alb_tg
+}
+
+module "cloud_watch_alarm" {
+  source = "./cloud_watch_alarm"
+  cpu_utilization = var.cpu_utilization
+  sns_topic = var.sns_topic
+  auto_scaling_policy_ec2_increment_arn = module.asg.increase_ec2_arn
+  auto_scaling_policy_ec2_decrement_arn = module.asg.decrease_ec2_arn
+  autoscaling_name_for_alarm = module.asg.auto_scaling_name
 }
 
 ######################################################

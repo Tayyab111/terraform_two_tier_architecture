@@ -79,9 +79,9 @@ resource "aws_subnet" "tf_public_subnet" {
 # PRIVATE_SUBNET
 resource "aws_subnet" "tf_private_subnet" {
     
-  count =   length(var.vpc_config.private_cidr)
-    
+  count =   length(var.vpc_config.private_cidr)  
   vpc_id                  = aws_vpc.tf_vpc.id
+  map_public_ip_on_launch = false 
   cidr_block              = var.vpc_config.private_cidr[count.index]
   availability_zone = element(data.aws_availability_zones.available.names , count.index)
   #availability_zone       = var.vpc_config["availability_zone_ap_southeast_1"]
