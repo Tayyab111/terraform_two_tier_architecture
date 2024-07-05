@@ -9,7 +9,7 @@ vpc_config = {
   #private_cidr =  "10.0.11.0/24"
   private_cidr = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
   #accessip                     = "0.0.0.0/0"
-  availability_zone_ap_southeast_1 = ["ap-southeast-1a", "ap-southeast-1b"]
+  availability_zone_ap_southeast_1 = ["us-east-1a", "us-east-1b"]
 }
 
 
@@ -69,10 +69,10 @@ rds_cluster = {
   cluster_identifier      = "mysql-cluster-demo"
   engine                  = "aurora-mysql"
   engine_version          = "5.7.mysql_aurora.2.12.0"
-  availability_zones      = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
+  availability_zones      = ["us-east-1a", "us-east-1b", "us-east-1c"]
   database_name           = "mydb"
   master_username         = "tayyab"
-  master_password         = "t123456789"
+  #master_password         = "t123456789"
   backup_retention_period = 5
   preferred_backup_window = "07:00-09:00"
 
@@ -87,81 +87,87 @@ rds_cluster = {
 
 launch_template = {
   name_prefix   = "wordpress_template"
-  image_id      = "ami-0a95d2cc973f39afc"
+  image_id      = "ami-0195204d5dce06d99" #"ami-0a95d2cc973f39afc"
   instance_type = "t2.small"
   user_data     = "/home/tayab/Desktop/tfnew/asg/user_data.sh"
   resource_type = "instance"
 }
 my_asg = {
-  name = "wordpress_asg"
+  name    = "wordpress_asg"
   version = "$Latest"
-  desired = "1"
-  max     = "2"
-  min     = "1"
+  desired = 1
+  max     = 4
+  min     = 1
 }
 asg_scaling_policy = {
-  scaling_adjustment = "1"
-  adjustment_type = "ChangeInCapacity"
-  cooldown = "300"
-  policy_type = "StepScaling"
+  scaling_adjustment = 1
+  adjustment_type    = "ChangeInCapacity"
+  cooldown           = 300
+  policy_type        = "StepScaling"
 
   increase_one_ec2 = {
     name = "increase-one-ec2"
+    scaling_adjustment = 1
+    metric_interval_lower_bound = 30
+    metric_interval_upper_bound = 80
   }
   increase_two_ec2 = {
-    name = "increase-one-ec2"
-    scaling_adjustment = "1"
+    name               = "increase-two-ec2"
+    scaling_adjustment = 2
+    metric_interval_lower_bound = 80
   }
-  increase_one_ec2 = {
+  decrease_two_ec2 = {
     name = "increase-one-ec2"
+    scaling_adjustment = -3
+    metric_interval_lower_bound = 0
   }
 }
 
 alb = {
-  name = "wordpress-alb"
-  internal = "false"
-  idle_timeout = "400" #it means that connections to the ALB will be closed by the ALB if they remain idle for longer than 60 seconds.
+  name            = "wordpress-alb"
+  internal        = "false"
+  idle_timeout    = 400 #it means that connections to the ALB will be closed by the ALB if they remain idle for longer than 60 seconds.
   ip_address_type = "ipv4"
 
   alb_listener = {
-    port = "80"
+    port     = 80
     protocol = "HTTP"
-}
+  }
 }
 alb_tg = {
-    healthy_threshold = "3"
-    unhealthy_threshold = "10"
-    timeout = "5"
-    interval = "10"
-    matcher = "200-303"
-  }
+  healthy_threshold   = 3
+  unhealthy_threshold = 10
+  timeout             = 5
+  interval            = 10
+  matcher             = "200-303"
+}
 
-cpu_utilization  = {
-  alarm_name = "increase_ec2"
-  alrm_name = "low"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods = "2"
-  metric_name = "CPUUtilization"
-  namespace = "AWS/EC2"
-  period = "120"
-  statistic = "Average"
-  threshold = "30"
-  alarm_description = "This metric monitors ec2 cpu utilization, if it goes above 40% for 2 periods it will trigger an alarm"
+cpu_utilization = {
+  alarm_name                = "increase_ec2"
+  alrm_name                 = "low"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = 2
+  metric_name               = "CPUUtilization"
+  namespace                 = "AWS/EC2"
+  period                    = 120
+  statistic                 = "Average"
+  threshold                 = "30"
+  alarm_description         = "This metric monitors ec2 cpu utilization, if it goes above 40% for 2 periods it will trigger an alarm"
   insufficient_data_actions = []
-  ok_actions = []
+  ok_actions                = []
 
   cpu_less_then_30 = {
-  alarm_name = "descrase_ec2"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  threshold = "30"
-  alarm_description = "This metric monitors ec2 cpu utilization, if it goes below 40% for 2 periods it will trigger an alarm."
-}
+    alarm_name          = "descrase_ec2"
+    comparison_operator = "LessThanOrEqualToThreshold"
+    threshold           = "30"
+    alarm_description   = "This metric monitors ec2 cpu utilization, if it goes below 40% for 2 periods it will trigger an alarm."
+  }
 }
 
 
 sns_topic = {
   name = "cpu_alarm_topic_sns"
-  topic_subscription ={
+  topic_subscription = {
     protocol = "email"
     endpoint = "tayyabafridi843@gmail.com"
   }

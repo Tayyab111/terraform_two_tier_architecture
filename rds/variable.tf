@@ -11,3 +11,6 @@ variable "tags" {
 variable "subnet_ids" {
   
 }
+variable "rds_password" {
+
+}

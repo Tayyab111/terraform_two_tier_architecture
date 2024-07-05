@@ -28,27 +28,27 @@ resource "aws_autoscaling_policy" "increase_ec2" {
   policy_type            = var.asg_scaling_policy.policy_type
 
   step_adjustment {
-    scaling_adjustment          = 1
-    metric_interval_lower_bound = 30 #This applies when the metric is greater than or equal to 30%.
-    metric_interval_upper_bound = 80 // This applies when the metric is less than or equal to 80%.
+    scaling_adjustment          = var.asg_scaling_policy.increase_one_ec2.scaling_adjustment
+    metric_interval_lower_bound = var.asg_scaling_policy.increase_one_ec2.metric_interval_lower_bound #This applies when the metric is greater than or equal to 30%.
+    metric_interval_upper_bound = var.asg_scaling_policy.increase_one_ec2.metric_interval_upper_bound // This applies when the metric is less than or equal to 80%.
 
   }
   step_adjustment {
-    scaling_adjustment = 2
-    metric_interval_lower_bound = 80
+    scaling_adjustment = var.asg_scaling_policy.increase_two_ec2.scaling_adjustment
+    metric_interval_lower_bound = var.asg_scaling_policy.increase_two_ec2.metric_interval_lower_bound
   }
 }
 
 
 resource "aws_autoscaling_policy" "decrease_ec2" {
-  name                   = var.asg_scaling_policy.increase_one_ec2.name
+  name                   = var.asg_scaling_policy.decrease_two_ec2.name
   adjustment_type        = var.asg_scaling_policy.adjustment_type
   autoscaling_group_name = aws_autoscaling_group.my_asg.name
   policy_type            = var.asg_scaling_policy.policy_type
 
   step_adjustment {
-    scaling_adjustment = -2
-    metric_interval_lower_bound = 0
+    scaling_adjustment = var.asg_scaling_policy.decrease_two_ec2.scaling_adjustment
+    metric_interval_lower_bound = var.asg_scaling_policy.decrease_two_ec2.metric_interval_lower_bound
     
 }
 }

@@ -13,6 +13,10 @@ output "db_name" {
 output "user_name" {
   value = var.rds_cluster.master_username
 }
+# output "password" {
+#   value = var.rds_cluster.master_password
+  
+# }
 output "password" {
-  value = var.rds_cluster.master_password
+  value = aws_rds_cluster.db_cluster.master_password
 }
