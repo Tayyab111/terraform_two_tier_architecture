@@ -13,7 +13,8 @@ variable "rds_cluster" {}
 variable "launch_template" {}
 
 variable "my_asg" {}
-variable "asg_scaling_policy" {}
+variable "asg_scaling_policy_scale_out" {}
+variable "asg_scaling_policy_scale_in" {}
 
 variable "alb" {}
 variable "alb_tg" {}

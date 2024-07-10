@@ -99,14 +99,12 @@ my_asg = {
   max     = 4
   min     = 1
 }
-asg_scaling_policy = {
-  scaling_adjustment = 1
+asg_scaling_policy_scale_out = {
+  name = "increase-one-ec2"
   adjustment_type    = "ChangeInCapacity"
-  cooldown           = 300
+  #cooldown           = 200 # cooldown is only supported for policy type SimpleScaling
   policy_type        = "StepScaling"
-
   increase_one_ec2 = {
-    name = "increase-one-ec2"
     scaling_adjustment = 1
     metric_interval_lower_bound = 30
     metric_interval_upper_bound = 80
@@ -116,12 +114,17 @@ asg_scaling_policy = {
     scaling_adjustment = 2
     metric_interval_lower_bound = 80
   }
-  decrease_two_ec2 = {
-    name = "increase-one-ec2"
-    scaling_adjustment = -3
+}
+asg_scaling_policy_scale_in = {
+  name = "increase-one-ec2"
+  adjustment_type    = "ChangeInCapacity"
+  policy_type = "StepScaling"
+    decrease_two_ec2 = {
+    scaling_adjustment = -2
     metric_interval_lower_bound = 0
   }
 }
+
 
 alb = {
   name            = "wordpress-alb"
@@ -142,7 +145,7 @@ alb_tg = {
   matcher             = "200-303"
 }
 
-cpu_utilization = {
+cpu_utilization = { # for alarm
   alarm_name                = "increase_ec2"
   alrm_name                 = "low"
   comparison_operator       = "GreaterThanOrEqualToThreshold"

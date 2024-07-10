@@ -35,7 +35,8 @@ module "asg" {
   my_asg                 = var.my_asg
   private_subnet_id      = module.vpc.subnet_ids
   alb_target_arn         = module.alb.alb_target_group_arn
-  asg_scaling_policy     = var.asg_scaling_policy
+  asg_scaling_policy_scale_out     = var.asg_scaling_policy_scale_out
+  asg_scaling_policy_scale_in = var.asg_scaling_policy_scale_in
 }
 module "launch_template" {
   source           = "./lanuch_template"

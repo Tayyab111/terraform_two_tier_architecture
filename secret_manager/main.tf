@@ -5,11 +5,11 @@ data "aws_secretsmanager_random_password" "random_password_generate" {
   #include_space       = false
   exclude_uppercase   = false
   exclude_lowercase   = false
-  exclude_characters = "!@#$%^&*()?><.=:;|-_+,"
+  exclude_characters = "!@#$%^&*()?> <.=:;|-_+}]/,"
 }
 
 resource "aws_secretsmanager_secret" "my_secret" {
-  name = "my_secret_for_rdssss"
+  name = "my_secret_for_rdsssssssss"
 }
 
 resource "aws_secretsmanager_secret_version" "my_secret_for_rds" {
