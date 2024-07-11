@@ -9,7 +9,7 @@ data "aws_secretsmanager_random_password" "random_password_generate" {
 }
 
 resource "aws_secretsmanager_secret" "my_secret" {
-  name = "my_secret_for_rdsssssssss"
+  name = "my_secret_for_rdsssssssssss"
 }
 
 resource "aws_secretsmanager_secret_version" "my_secret_for_rds" {

@@ -40,16 +40,25 @@ resource "aws_autoscaling_policy" "increase_ec2" {
 }
 
 
+
+
+
+# stress --cpu 1 --timeout 600
 resource "aws_autoscaling_policy" "decrease_ec2" {
-  name                   = "decrease_ec2"#var.asg_scaling_policy_scale_in.name
-  adjustment_type        = "ChangeInCapacity"#var.asg_scaling_policy_scale_in.adjustment_type
+  name                   = "decrease_ec2" # var.asg_scaling_policy_scale_in.name
+  adjustment_type        = "ChangeInCapacity" # var.asg_scaling_policy_scale_in.adjustment_type
   autoscaling_group_name = aws_autoscaling_group.my_asg.name
-  policy_type            = "StepScaling"#var.asg_scaling_policy_scale_in.policy_type
+  policy_type            = "StepScaling" # var.asg_scaling_policy_scale_in.policy_type
   
+  step_adjustment {
+    scaling_adjustment          = -2 # var.asg_scaling_policy_scale_in.decrease_two_ec2.scaling_adjustment
+    metric_interval_lower_bound = 0.0 # var.asg_scaling_policy_scale_in.decrease_two_ec2.metric_interval_lower_bound
+    metric_interval_upper_bound = 24
+  }
 
   step_adjustment {
-    scaling_adjustment = -2 #var.asg_scaling_policy_scale_in.decrease_two_ec2.scaling_adjustment
-    metric_interval_lower_bound = 1 #var.asg_scaling_policy_scale_in.decrease_two_ec2.metric_interval_lower_bound
-    
-}
+    scaling_adjustment          = 0
+    metric_interval_lower_bound = 24
+    metric_interval_upper_bound = null
+  }
 }
