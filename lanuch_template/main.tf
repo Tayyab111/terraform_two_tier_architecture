@@ -6,7 +6,7 @@ name_prefix   = "${var.tags.Name}-${var.launch_template.name_prefix}"
   #user_data = filebase64(var.launch_template.user_data)
   user_data = base64encode(data.template_file.my_template.rendered)
   network_interfaces {
-    associate_public_ip_address = true
+    associate_public_ip_address = false
     subnet_id                   = var.public_subnet_id[0] #var.public_subnet_id is tuple with 1 element: Inappropriate value for attribute "subnet_id": string required.
     security_groups             = [var.sg_id[0]]
 
