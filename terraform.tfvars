@@ -169,7 +169,7 @@ cpu_utilization = { # for alarm
 
 
 sns_topic = {
-  name = "cpu_alarm_topic_sns_T"
+  name = "cpu_alarm_topic_sns"
   topic_subscription = {
     protocol = "email"
     endpoint = "tayyabafridi843@gmail.com"
